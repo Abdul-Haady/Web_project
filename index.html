@@ -185,6 +185,7 @@ I hope this year brings you happiness, good health, peace, and success.
 let opened = false;
 let typingInterval;
 
+
 function startTyping(){
 
     let i = 0;
@@ -194,6 +195,14 @@ function startTyping(){
     let sigStarted = false;
     let sigIndex = 0;
 
+    // reset signature EVERY time card opens
+    const sigText = document.getElementById("sigText");
+    const backBtn = document.getElementById("backBtn");
+
+    sigText.innerHTML = "";
+    sigText.style.opacity = "0";
+    backBtn.style.display = "none";
+
     typingInterval = setInterval(() => {
 
         if(i <= message.length){
@@ -201,31 +210,33 @@ function startTyping(){
             typewriter.innerHTML =
                 message.substring(0, i) +
                 '<span class="cursor">|</span>';
-
         }
 
         i++;
 
-        // START signature after message ends (but inside same loop)
         if(i > message.length){
 
             if(!sigStarted){
                 sigStarted = true;
-                document.getElementById("sigText").style.opacity = "1";
+                sigText.style.opacity = "1";
             }
 
             if(sigIndex <= sig.length){
 
-                document.getElementById("sigText").innerHTML =
+                sigText.innerHTML =
                     sig.substring(0, sigIndex).replace("\n", "<br>");
 
                 sigIndex++;
             }
 
-            // stop interval after signature finishes
+            // FINISHED EVERYTHING
             if(sigIndex > sig.length){
                 clearInterval(typingInterval);
+
                 typewriter.innerHTML = message;
+
+                // 👉 SHOW BACK BUTTON HERE
+                backBtn.style.display = "inline-block";
             }
         }
 
@@ -256,8 +267,12 @@ backBtn.addEventListener("click", (e) => {
 
     typewriter.innerHTML = "";
 
-    opened = false;
+    document.getElementById("sigText").innerHTML = "";
+    document.getElementById("sigText").style.opacity = "0";
 
+    backBtn.style.display = "none";
+
+    opened = false;
 });
 
 </script>

@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy Birthday Papa!</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:linear-gradient(135deg,#1e3c72,#2a5298);
+    font-family:Arial, sans-serif;
+    padding:20px;
+}
+
+.scene{
+    width:90%;
+    max-width:900px;
+    perspective:2000px;
+}
+
+.card{
+    width:100%;
+    aspect-ratio:3/2;
+    position:relative;
+    transform-style:preserve-3d;
+    transition:transform 1.5s ease;
+    cursor:pointer;
+}
+
+.card{
+    transform-origin:center;
+}
+
+.card:not(.open):hover{
+    transform: translateY(-10px) scale(1.02);
+    box-shadow:0 25px 60px rgba(0,0,0,0.5);
+}
+
+.card.open{
+    transform:rotateY(180deg);
+}
+
+.front,
+.back{
+    position:absolute;
+    width:100%;
+    height:100%;
+    backface-visibility:hidden;
+    border-radius:20px;
+    overflow:hidden;
+    box-shadow:0 15px 40px rgba(0,0,0,0.4);
+}
+
+.front img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+
+.back{
+    background:white;
+    transform:rotateY(180deg);
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:50px;
+    text-align:center;
+}
+
+.message{
+    max-width:650px;
+}
+
+.message h1{
+    margin-bottom:25px;
+    color:#333;
+}
+
+.message p{
+    font-size:1.25rem;
+    line-height:1.8;
+    color:#444;
+}
+
+#signature{
+    margin-top:30px;
+    text-align:left;
+    font-size:1.2rem;
+    color:#444;
+
+    opacity:1;
+}
+
+#sigText{
+    opacity:0;
+    transition:opacity 0.4s ease;
+}
+
+.cursor{
+    display:inline-block;
+    animation:blink 0.8s infinite;
+}
+
+@keyframes blink{
+    50%{
+        opacity:0;
+    }
+}
+
+#backBtn{
+    margin-top:30px;
+    padding:12px 24px;
+    font-size:1rem;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+#backBtn:hover{
+    transform:translateY(-2px);
+}
+
+#backBtn{
+    display:none;
+}
+
+</style>
+</head>
+<body>
+
+<div class="scene">
+
+    <div class="card" id="card">
+
+        <div class="front">
+            <img src="birthday-card.jpg" alt="Birthday Card">
+        </div>
+
+        <div class="back">
+
+            <div class="message">
+
+                <h1>Happy Birthday Papa</h1>
+
+                <p id="typewriter"></p>
+
+                <p id="signature">
+                <span id="sigText"></span>
+                </p>
+                
+                <button id="backBtn">← Back to Card</button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+const card = document.getElementById("card");
+const typewriter = document.getElementById("typewriter");
+const backBtn = document.getElementById("backBtn");
+
+const message =
+`Thank you for everything you've done for me. Your support, guidance, and sacrifices have shaped who I am today. 
+I hope this year brings you happiness, good health, peace, and success.
+ May Allah bless you and reward you for every sacrifice you've made for our family.`;
+
+let opened = false;
+let typingInterval;
+
+function startTyping(){
+
+    let i = 0;
+    typewriter.innerHTML = "";
+
+    let sig = "From,\nYour Family ❤️";
+    let sigStarted = false;
+    let sigIndex = 0;
+
+    typingInterval = setInterval(() => {
+
+        if(i <= message.length){
+
+            typewriter.innerHTML =
+                message.substring(0, i) +
+                '<span class="cursor">|</span>';
+
+        }
+
+        i++;
+
+        // START signature after message ends (but inside same loop)
+        if(i > message.length){
+
+            if(!sigStarted){
+                sigStarted = true;
+                document.getElementById("sigText").style.opacity = "1";
+            }
+
+            if(sigIndex <= sig.length){
+
+                document.getElementById("sigText").innerHTML =
+                    sig.substring(0, sigIndex).replace("\n", "<br>");
+
+                sigIndex++;
+            }
+
+            // stop interval after signature finishes
+            if(sigIndex > sig.length){
+                clearInterval(typingInterval);
+                typewriter.innerHTML = message;
+            }
+        }
+
+    }, 50);
+}
+
+card.addEventListener("click", () => {
+
+    if(opened) return;
+
+    opened = true;
+
+    card.classList.add("open");
+
+    setTimeout(() => {
+        startTyping();
+    }, 1400);
+
+});
+
+backBtn.addEventListener("click", (e) => {
+
+    e.stopPropagation();
+
+    clearInterval(typingInterval);
+
+    card.classList.remove("open");
+
+    typewriter.innerHTML = "";
+
+    opened = false;
+
+});
+
+</script>
+
+</body>
+</html>
